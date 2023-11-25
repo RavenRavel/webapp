@@ -17,7 +17,7 @@ pipeline {
          sh 'rm owasp* || true'
          sh 'wget "https://raw.githubusercontent.com/RavenRavel/webapp/master/owasp-dependency-check.sh" '
          sh 'chmod +x owasp-dependency-check.sh'
-         sh 'owasp-dependency-check.sh --purge'
+         sh 'bash owasp-dependency-check.sh --purge'
          sh 'bash owasp-dependency-check.sh'
          sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
         
