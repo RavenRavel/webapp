@@ -12,16 +12,7 @@ pipeline {
             ''' 
       }
     }
-     stage ('Source Composition Analysis') {
-      steps {
-         sh 'rm owasp* || true'
-         sh 'wget "https://raw.githubusercontent.com/RavenRavel/webapp/master/owasp-dependency-check.sh" '
-         sh 'chmod +x owasp-dependency-check.sh'
-         sh 'bash owasp-dependency-check.sh'
-         sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
-        
-      }
-    }
+    
     stage ('Check-Git-Secrets') {
       steps {
         sh 'rm trufflehog || true'
@@ -43,6 +34,13 @@ pipeline {
       steps {
       sh 'mvn clean package'
        }
+    }
+     stage ('DAST') {
+      steps {
+        sshagent(['zap']) {
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@13.39.17.154 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://13.36.209.84:8080/webapp/" || true'
+        }
+      }
     }
   }
 }
